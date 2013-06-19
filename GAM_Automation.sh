@@ -3,7 +3,7 @@
 gam="python /gam/gam.py" #set this to the location of your GAM binaries
 DATE=`date +%Y-%m-%d`
 newuser(){
-   echo "    Patch gApps Admin"
+   echo "        gApps Admin"
    read -p "Enter email address to admin: " email
    }
 clear
