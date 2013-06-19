@@ -1,16 +1,16 @@
 #! /bin/bash
 
 gam="python /gam/gam.py" #set this to the location of your GAM binaries
-clear
 newuser(){
-   echo "    gApps Admin"
+   echo "         gApps Admin"
    read -p "Enter email address to admin: " email
-}
+   }
 clear
 newuser
 while :
 do
  clear
+ echo "Currently Managing $email"
  echo "   M A I N - M E N U"
  echo "1. Set Vacation Message /Remove Forward"
  echo "2. Delete Signature"
@@ -18,9 +18,10 @@ do
  echo "4. Remove From All Groups"
  echo "5. Check Group Membership"
  echo "6. Perform All Tasks"
- echo "7. Admin Another User"
- echo "8. Exit"
- echo "Please enter option [1 - 8]"
+ echo "7. Mirror $email's Groups to another user"
+ echo "8. Admin Another User"
+ echo "9. Exit"
+ echo "Please enter option [1 - 9]"
     read opt
     case $opt in
      1) echo "************ Set Vacation Message / Remove Forward *************";
@@ -49,7 +50,7 @@ do
         purge_groups=$($gam info user $email | grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1)
         echo $purge_groups;
         echo "Groups have been checked [enter] key to continue. . .";
-        read enterKey;;
+        read enterKey;; 
      6) echo "************ Perform All Tasks ************";   
         read -p "Please enter vacation message: " vaca_message
         $gam user $email forward off
@@ -62,16 +63,26 @@ do
             done;
         echo "All tasks preformed press [enter] key to continue. . .";
         read enterKey;;
-     7) echo "************ Admin Another User ************";
+      
+     7) echo "************ Mirror $email Groups to another user ************";
+        read -p  "Enter email address to be mirrored: " mirrored;
+        echo $email groups will be mirrored to $mirrored press enter if this is OK?;
+        read enterKey;
+         purge_groups=$($gam info user $email | grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:')
+           for i in $purge_groups
+            do
+               echo adding $mirror to $i group  |$gam update group $i add member $mirrored
+            done;
+        echo "All groups have been mirrored press [enter] key to continue. . .";
+        read enterKey;;
+     8) echo "************ Admin Another User ************";
         newuser;       
         echo "Press [enter] key to continue. . .";
         read enterKey;;
-     8) echo "Bye $USER";
+     9) echo "Bye $USER";
         exit 1;; 
      *) echo "$opt is an invaild option. Please select option between 1-8 only"
        echo "Press [enter] key to continue. . .";
         read enterKey;;
 esac
 done
-
-
