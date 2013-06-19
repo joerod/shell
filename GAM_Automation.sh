@@ -55,8 +55,9 @@ do
         read enterKey;; 
      6) echo "************ Perform All Tasks ************";   
         read -p "Please enter vacation message: " vaca_message
+        read -p "Enter vacation message end date YYYY-MM-DD: " end_date
         $gam user $email forward off
-        $gam user $email vacation on subject 'Out of the office' message "$vaca_message";
+        $gam user $email vacation on subject 'Out of the office' message "$vaca_message" startdate $DATE enddate $end_date
         $gam user $email signature ' ';
         purge_groups=$($gam info user $email | grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:')
            for i in $purge_groups
@@ -66,7 +67,7 @@ do
         echo "All tasks preformed press [enter] key to continue. . .";
         read enterKey;;
       
-     7) echo "************ Mirror $email Groups to another user ************";
+     7) echo "************ Mirror $email groups to another user ************";
         read -p  "Enter email address to be mirrored: " mirrored;
         echo $email groups will be mirrored to $mirrored press enter if this is OK?;
         read enterKey;
