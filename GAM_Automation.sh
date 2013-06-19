@@ -1,8 +1,9 @@
 #! /bin/bash
 
 gam="python /gam/gam.py" #set this to the location of your GAM binaries
+DATE=`date +%Y-%m-%d`
 newuser(){
-   echo "         gApps Admin"
+   echo "    Patch gApps Admin"
    read -p "Enter email address to admin: " email
    }
 clear
@@ -26,8 +27,9 @@ do
     case $opt in
      1) echo "************ Set Vacation Message / Remove Forward *************";
         read -p "Please enter vacation message: " vaca_message
+        read -p "Enter vacation message end date YYYY-MM-DD: " end_date
         $gam user $email forward off
-        $gam user $email vacation on subject 'Out of the office' message "$vaca_message";
+        $gam user $email vacation on subject 'Out of the office' message "$vaca_message" startdate $DATE enddate $end_date
         echo "Press [enter] key to continue. . .";
         read enterKey;;
      2) echo "************ Delete Signature ************";
