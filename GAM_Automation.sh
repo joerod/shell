@@ -81,7 +81,7 @@ do
         read enterKey;;
      9) echo "Bye $USER";
         exit 1;; 
-     *) echo "$opt is an invaild option. Please select option between 1-8 only"
+     *) echo "$opt is an invaild option. Please select option between 1-9 only"
        echo "Press [enter] key to continue. . .";
         read enterKey;;
 esac
