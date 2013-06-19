@@ -1,10 +1,13 @@
 #! /bin/bash
+
 gam="python /gam/gam.py" #set this to the location of your GAM binaries
 clear
-echo "         gApps Admin"
-read -p "Enter email address to admin: " email
+newuser(){
+   echo "    Patch gApps Admin"
+   read -p "Enter email address to admin: " email
+}
 clear
-
+newuser
 while :
 do
  clear
@@ -46,7 +49,7 @@ do
         purge_groups=$($gam info user $email | grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1)
         echo $purge_groups;
         echo "Groups have been checked [enter] key to continue. . .";
-        read enterKey;; #joerod wuz here
+        read enterKey;;
      6) echo "************ Perform All Tasks ************";   
         read -p "Please enter vacation message: " vaca_message
         $gam user $email forward off
@@ -60,7 +63,7 @@ do
         echo "All tasks preformed press [enter] key to continue. . .";
         read enterKey;;
      7) echo "************ Admin Another User ************";
-        echo working on it;       
+        newuser;       
         echo "Press [enter] key to continue. . .";
         read enterKey;;
      8) echo "Bye $USER";
@@ -70,4 +73,5 @@ do
         read enterKey;;
 esac
 done
+
 
