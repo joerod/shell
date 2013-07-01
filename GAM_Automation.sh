@@ -2,7 +2,7 @@
 
 gam="python /gam/gam.py" #set this to the location of your GAM binaries
 DATE=`date +%Y-%m-%d`
-randpassword=$(date | md5sum | head -c 8) #creates a random 8 charecter password
+randpassword=$(date | md5sum | head -c 8) #creates a random 8 character password
 
 newuser(){
    echo "     gApps Admin"
