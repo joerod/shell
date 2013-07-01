@@ -2,7 +2,7 @@
 
 gam="python /gam/gam.py" #set this to the location of your GAM binaries
 DATE=`date +%Y-%m-%d`
-randpassword=$(date | md5sum | head -c 8) #creates a random 8 character password
+randpassword=$(date | md5sum | head -c 8) #creates a random 8 charecter password
 
 newuser(){
    echo "     gApps Admin"
@@ -54,6 +54,7 @@ do
         purge_groups=$($gam info user $email | grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:')
            for i in $purge_groups
             do
+               echo removing $i
                $gam update group $i remove member $email
             done;
         echo "All groups removed press [enter] key to continue. . .";
@@ -90,7 +91,8 @@ do
         purge_groups=$($gam info user $email | grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:')
            for i in $purge_groups
             do
-               echo removing $i |$gam update group $i remove member $email
+               echo removing $i            
+               $gam update group $i remove member $email
             done;
         echo "All tasks preformed press [enter] key to continue. . .";
         read enterKey;;
