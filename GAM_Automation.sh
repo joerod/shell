@@ -2,10 +2,13 @@
 
 gam="python /gam/gam.py" #set this to the location of your GAM binaries
 DATE=`date +%Y-%m-%d`
+randpassword=$(date | md5sum | head -c 8) #creates a random 8 charecter password
+
 newuser(){
-   echo "    Patch gApps Admin"
+   echo "     gApps Admin"
    read -p "Enter email address to admin: " email
    }
+
 clear
 newuser
 while :
@@ -19,13 +22,14 @@ do
  echo "4. Remove From All Groups"
  echo "5. Check Group Membership"
  echo "6. Remove $email from GAL"
- echo "7. Suspend User"
- echo "8. Perform All Tasks"
- echo "9. Show all calendars"
- echo "10. Mirror $email's Groups to another user"
- echo "11. Admin Another User"
- echo "12. Exit"
- echo "Please enter option [1 - 12]"
+ echo "7. Reset Password"
+ echo "8. Suspend User"
+ echo "9. Perform All Tasks"
+ echo "10. Show all calendars"
+ echo "11. Mirror $email's Groups to another user"
+ echo "12. Admin Another User"
+ echo "13. Exit"
+ echo "Please enter option [1 - 13]"
     read opt
     case $opt in
      1) echo "************ Set Vacation Message / Remove Forward *************";
@@ -64,19 +68,25 @@ do
         $gam user $email profile unshared
         echo "User is now hidden from the GAL Press [enter] key to continue. . .";
         read enterKey;;
+        
+     7) echo "************ Reset Password ************";
+        $gam update user $email password $randpassword
+        echo "Password has been reset to $randpassword [enter] key to continue. . .";
+        read enterKey;;  
 
-     7) echo "************ Suspend  User ************";
+     8) echo "************ Suspend  User ************";
         $gam update user $email suspended on
         echo "User is now suspended press [enter] key to continue. . .";
         read enterKey;;
 
-     8) echo "************ Perform All Tasks ************";
+     9) echo "************ Perform All Tasks ************";
         read -p "Please enter vacation message: " vaca_message
         read -p "Enter vacation message end date YYYY-MM-DD: " end_date
         $gam user $email forward off
         $gam user $email vacation on subject 'Out of the office' message "$vaca_message" startdate $DATE enddate $end_date
         $gam user $email signature '';
         $gam user $email profile unshared
+        $gam update user $email password $randpassword
         purge_groups=$($gam info user $email | grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:')
            for i in $purge_groups
             do
@@ -85,12 +95,12 @@ do
         echo "All tasks preformed press [enter] key to continue. . .";
         read enterKey;;
 
-     9) echo "************ Show all calendars ************";
+     10) echo "************ Show all calendars ************";
         $gam user $email show calendars
          echo "All tasks preformed press [enter] key to continue. . .";
         read enterKey;;
 
-     10) echo "************ Mirror $email groups to another user ************";
+     11) echo "************ Mirror $email groups to another user ************";
         read -p  "Enter email address to be mirrored: " mirrored;
         echo $email groups will be mirrored to $mirrored press enter if this is OK?;
         read enterKey;
@@ -102,14 +112,14 @@ do
         echo "All groups have been mirrored press [enter] key to continue. . .";
         read enterKey;;
 
-     11) echo "************ Admin Another User ************";
+     12) echo "************ Admin Another User ************";
         newuser;       
         echo "Press [enter] key to continue. . .";
         read enterKey;;
     
-    12) echo "Bye $USER";
+    13) echo "Bye $USER";
         exit 1;; 
-     *) echo "$opt is an invaild option. Please select option between 1-12 only"
+     *) echo "$opt is an invaild option. Please select option between 1-13 only"
        echo "Press [enter] key to continue. . .";
         read enterKey;;
 esac
