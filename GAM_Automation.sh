@@ -1,9 +1,9 @@
 #! /bin/bash
 
-gam="python /gam/gam.py" #set this to the location of your GAM binaries
+gam="python gam/gam.py" #set this to the location of your GAM binaries
 DATE=`date +%Y-%m-%d`
 randpassword=$(date | md5sum | head -c 8) #creates a random 8 charecter password
-
+n
 newuser(){
    echo "     gApps Admin"
    read -p "Enter email address to admin: " email
@@ -104,15 +104,22 @@ do
 
      11) echo "************ Mirror $email groups to another user ************";
         read -p  "Enter email address to be mirrored: " mirrored;
-        echo $email groups will be mirrored to $mirrored press enter if this is OK?;
-        read enterKey;
-         purge_groups=$(grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:')
-           for i in $purge_groups
-            do
-               echo adding $mirror to $i group  |$gam update group $i add member $mirrored
-            done;
-        echo "All groups have been mirrored press [enter] key to continue. . .";
-        read enterKey;;
+        echo $email groups will be mirrored to $mirrored press 1 if this is OK or 2 to exit;
+        read answer
+        if [ "$answer" -eq "1" ]
+         then
+              purge_groups=$($gam info user $email |grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:')
+                 for i in $purge_groups
+                  do
+                     echo adding $mirror to $i group  
+                     $gam update group $i add member $mirrored
+                  done;
+          echo "All groups have been mirrored press [enter] key to continue. . .";
+          read enterKey;
+        else
+             clear
+             newuser
+         fi;;
 
      12) echo "************ Admin Another User ************";
         newuser;       
