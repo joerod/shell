@@ -3,7 +3,7 @@
 gam="python $HOME/Documents/gam/gam.py" #set this to the location of your GAM binaries
 randpassword=$(date | md5sum | head -c 8) #creates a random 8 charecter password
 start_date=`date +%Y-%m-%d` # sets date for vacation message in proper formate   
-end_date=`date +%Y-%m-%d -v+90d` #adds 90 days to todays date for vacation message
+end_date=`date -v+90d +%Y-%m-%d` #adds 90 days to todays date for vacation message
 newuser(){
    echo "     gApps Admin"
    read -p "Enter email address to admin: " email
