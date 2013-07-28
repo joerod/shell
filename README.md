@@ -1,5 +1,4 @@
-GAM (Google Apps Manager) Automation
+Shell Scripts
 =============
 
-This shell script uses GAM (https://code.google.com/p/google-apps-manager/) to automate various processes. A key feature of this script is the removal and  cloning of all email groups
-
+Various shell scripts I've created to automate tasks.
