@@ -1,12 +1,16 @@
 #! /bin/bash
 
 gam="python $HOME/Documents/gam/gam.py" #set this to the location of your GAM binaries
-randpassword=$(date | md5sum | head -c 8) #creates a random 8 charecter password
+randpassword=$(env LC_CTYPE=C tr -dc "a-zA-Z0-9-_\$\?" < /dev/urandom | head -c 8) #creates a random 8 charecter password
 start_date=`date +%Y-%m-%d` # sets date for vacation message in proper formate   
 end_date=`date -v+90d +%Y-%m-%d` #adds 90 days to todays date for vacation message
 newuser(){
    echo "     gApps Admin"
-   read -p "Enter email address to admin: " email
+  read -p "Enter email address to admin: " email
+    if [[ -z $email ]];
+      then echo "Please enter an email address to proceed";
+      read -p "Enter email address to admin: " email
+    fi  
    }
 
 clear
@@ -25,18 +29,19 @@ do
  echo "7. Remove $email from GAL"
  echo "8. Reset Password"
  echo "9. Suspend User"
- echo "10. Perform All Tasks"
+ echo "10. Offboarding"
  echo "11. Show all calendars"
  echo "12. Mirror $email's Groups to another user"
- echo "13. Admin Another User"
- echo "14. Exit"
- echo "Please enter option [1 - 14]"
+ echo "13. Forward $email's Emails to another user"
+ echo "14. Admin Another User"
+ echo "15. Exit"
+ echo "Please enter option [1 - 15]"
     read opt
     case $opt in
      1) echo "************ Set Vacation Message / Remove Forward *************";
         read -p "Please enter vacation message: " vaca_message
         $gam user $email forward off
-        $gam user $email vacation on subject 'Out of the office' message "$vaca_message" startdate $start_date enddate $end_date
+        $gam user $email vacation on subject 'Out of the office' message "$vaca_message" startdate $start_date enddate $end_date 
         echo "Press [enter] key to continue. . .";
         read enterKey;;
     
@@ -51,7 +56,7 @@ do
         read enterKey;;
     
      4) echo "************ Check Group Membership ************";
-        purge_groups=$($gam info user $email | grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 | sort)
+        purge_groups=$($gam info user $email | grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |sort )
         for i in $purge_groups
             do
                echo $i
@@ -93,7 +98,7 @@ do
         echo "User is now suspended press [enter] key to continue. . .";
         read enterKey;;
 
-     10) echo "************ Perform All Tasks ************";
+     10) echo "************ Offboarding ************";
         read -p "Please enter vacation message: " vaca_message
         $gam user $email forward off
         $gam user $email vacation on subject 'Out of the office' message "$vaca_message" startdate $start_date enddate $end_date
@@ -132,15 +137,22 @@ do
              clear
              newuser
          fi;;
-
-     13) echo "************ Admin Another User ************";
+         
+     13) echo "************ Forward $email's Emails to another user ************";
+         read -p  "Enter email address where mail will be forwarded: " forward;
+         gam user $email forward on $forward keep
+         echo "Emails are bing forwarded press [enter] key to continue. . .";
+        read enterKey;;
+        
+     14) echo "************ Admin Another User ************";
         newuser;       
         echo "Press [enter] key to continue. . .";
         read enterKey;;
     
-    14) echo "Bye $USER";
+     15) echo "Bye $USER";
         exit 1;; 
-     *) echo "$opt is an invaild option. Please select option between 1-14 only"
+        
+     *) echo "$opt is an invaild option. Please select option between 1-15 only"
        echo "Press [enter] key to continue. . .";
         read enterKey;;
 esac
