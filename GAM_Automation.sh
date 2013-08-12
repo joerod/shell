@@ -1,7 +1,6 @@
 #! /bin/bash
 
 gam="python $HOME/Documents/gam/gam.py" #set this to the location of your GAM binaries
-randpassword=$(env LC_CTYPE=C tr -dc "a-zA-Z0-9-_\$\?" < /dev/urandom | head -c 8) #creates a random 8 charecter password
 start_date=`date +%Y-%m-%d` # sets date for vacation message in proper formate   
 end_date=`date -v+90d +%Y-%m-%d` #adds 90 days to todays date for vacation message
 newuser(){
@@ -89,6 +88,7 @@ do
         read enterKey;;
         
      8) echo "************ Reset Password ************";
+        randpassword=$(env LC_CTYPE=C tr -dc "a-zA-Z0-9-_\$\?" < /dev/urandom | head -c 8)
         $gam update user $email password $randpassword
         echo "Password has been reset to $randpassword [enter] key to continue. . .";
         read enterKey;;  
@@ -99,6 +99,7 @@ do
         read enterKey;;
 
      10) echo "************ Offboarding ************";
+        randpassword=$(env LC_CTYPE=C tr -dc "a-zA-Z0-9-_\$\?" < /dev/urandom | head -c 8)
         read -p "Please enter vacation message: " vaca_message
         $gam user $email forward off
         $gam user $email vacation on subject 'Out of the office' message "$vaca_message" startdate $start_date enddate $end_date
