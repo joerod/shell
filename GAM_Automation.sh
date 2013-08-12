@@ -88,7 +88,7 @@ do
         read enterKey;;
         
      8) echo "************ Reset Password ************";
-        randpassword=$(env LC_CTYPE=C tr -dc "a-zA-Z0-9-_\$\?" < /dev/urandom | head -c 8)
+        randpassword=$(env LC_CTYPE=C tr -dc "a-zA-Z0-9-_\$\?" < /dev/urandom | head -c 8) #creates random 8 charecter password
         $gam update user $email password $randpassword
         echo "Password has been reset to $randpassword [enter] key to continue. . .";
         read enterKey;;  
