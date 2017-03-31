@@ -55,7 +55,7 @@ do
         read enterKey;;
     
      4) echo "************ Check Group Membership ************";
-        purge_groups=$($gam info user $email| grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:'|grep -B 100 'Licenses:'| grep -v 'Licenses:')|sort )
+        purge_groups=$($gam info user $email| grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:'|grep -B 100 'Licenses:'| grep -v 'Licenses:'|sort )
         for i in $purge_groups
             do
                echo $i
