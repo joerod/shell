@@ -1,10 +1,10 @@
 #! /bin/bash
 
-gam="python $HOME/Documents/gam/gam.py" #set this to the location of your GAM binaries
+gam="$HOME/bin/gam/gam" #set this to the location of your GAM binaries
 start_date=`date +%Y-%m-%d` # sets date for vacation message in proper formate   
 end_date=`date -v+90d +%Y-%m-%d` #adds 90 days to todays date for vacation message
 newuser(){
-   echo "     gApps Admin"
+   echo "    gApps Admin"
   read -p "Enter email address to admin: " email
     if [[ -z $email ]];
       then echo "Please enter an email address to proceed";
@@ -55,7 +55,7 @@ do
         read enterKey;;
     
      4) echo "************ Check Group Membership ************";
-        purge_groups=$($gam info user $email | grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |sort )
+        purge_groups=$(gam info user $email| grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:'|grep -B 100 'Licenses:'| grep -v 'Licenses:')|sort )
         for i in $purge_groups
             do
                echo $i
@@ -72,10 +72,10 @@ do
    
      
      6) echo "************ Remove From All Groups ************";
-        purge_groups=$($gam info user $email | grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:')
+        purge_groups=$(gam info user $email| grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:'|grep -B 100 'Licenses:'| grep -v 'Licenses:')
            for i in $purge_groups
             do
-               echo removing $i
+               echo removing from $i
                $gam update group $i remove member $email
             done;
         echo "All groups removed press [enter] key to continue. . .";
@@ -106,7 +106,7 @@ do
         $gam user $email signature '';
         $gam user $email profile unshared
         $gam update user $email password $randpassword
-        purge_groups=$($gam info user $email | grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:')
+        purge_groups=$($gam info user $email | grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:'|grep -B 100 'Licenses:'| grep -v 'Licenses:')
            for i in $purge_groups
             do
                echo removing $i            
@@ -126,7 +126,7 @@ do
         read answer
         if [ "$answer" -eq "1" ]
          then
-              purge_groups=$($gam info user $email |grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:')
+              purge_groups=$($gam info user $email | grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:'|grep -B 100 'Licenses:'| grep -v 'Licenses:')
                  for i in $purge_groups
                   do
                      echo adding $mirror to $i group  
