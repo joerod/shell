@@ -1,5 +1,5 @@
 #! /bin/bash
-
+#originally developed by https://github.com/joerod/, edits by https://github.com/robolague/
 gam="$HOME/bin/gam/gam" #set this to the location of your GAM binaries
 start_date=`date +%Y-%m-%d` # sets date for vacation message in proper formate   
 end_date=`date -v+90d +%Y-%m-%d` #adds 90 days to todays date for vacation message
@@ -31,10 +31,11 @@ do
  echo "10. Offboarding"
  echo "11. Show all calendars"
  echo "12. Mirror $email's Groups to another user"
- echo "13. Forward $email's Emails to another user"
- echo "14. Admin Another User"
- echo "15. Exit"
- echo "Please enter option [1 - 15]"
+ echo "13. Mirror another user's Groups to $email"
+ echo "14. Forward $email's Emails to another user"
+ echo "15. Admin Another User"
+ echo "16. Exit"
+ echo "Please enter option [1 - 16]"
     read opt
     case $opt in
      1) echo "************ Set Vacation Message / Remove Forward *************";
@@ -88,7 +89,7 @@ do
         read enterKey;;
         
      8) echo "************ Reset Password ************";
-        randpassword=$(env LC_CTYPE=C tr -dc "a-zA-Z0-9-_\$\?" < /dev/urandom | head -c 8) #creates random 8 charecter password
+        randpassword=$(env LC_CTYPE=C tr -dc "a-zA-Z0-9-_\$\?" < /dev/urandom | head -c 12) #creates random 12 charecter password
         $gam update user $email password $randpassword
         echo "Password has been reset to $randpassword [enter] key to continue. . .";
         read enterKey;;  
@@ -99,30 +100,31 @@ do
         read enterKey;;
 
      10) echo "************ Offboarding ************";
-        randpassword=$(env LC_CTYPE=C tr -dc "a-zA-Z0-9-_\$\?" < /dev/urandom | head -c 8)
+        randpassword=$(env LC_CTYPE=C tr -dc "a-zA-Z0-9-_\$\?" < /dev/urandom | head -c 12)
         read -p "Please enter vacation message: " vaca_message
         $gam user $email forward off
         $gam user $email vacation on subject 'Out of the office' message "$vaca_message" startdate $start_date enddate $end_date
         $gam user $email signature '';
         $gam user $email profile unshared
         $gam update user $email password $randpassword
+        $gam user $email deprovision
         purge_groups=$($gam info user $email | grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:'|grep -B 100 'Licenses:'| grep -v 'Licenses:')
            for i in $purge_groups
             do
-               echo removing $i            
+               echo removing from $i            
                $gam update group $i remove member $email
             done;
-        echo "All tasks preformed press password has been set to $randpassword [enter] key to continue. . .";
+        echo "All tasks performed press password has been set to $randpassword [enter] key to continue. . .";
         read enterKey;;
 
      11) echo "************ Show all calendars ************";
         $gam user $email show calendars
-         echo "All tasks preformed press [enter] key to continue. . .";
+         echo "All tasks performed press [enter] key to continue. . .";
         read enterKey;;
 
-     12) echo "************ Mirror $email groups to another user ************";
+     12) echo "************ Mirror $email groups TO another user ************";
         read -p  "Enter email address to be mirrored: " mirrored;
-        echo $email groups will be mirrored to $mirrored press 1 if this is OK or 2 to exit;
+        echo $email groups will be mirrored TO $mirrored press 1 if this is OK or 2 to exit;
         read answer
         if [ "$answer" -eq "1" ]
          then
@@ -138,19 +140,38 @@ do
              clear
              newuser
          fi;;
-         
-     13) echo "************ Forward $email's Emails to another user ************";
+
+     13) echo "************ Mirror $email groups from another user ************";
+        read -p  "Enter email address to be mirrored FROM: " mirrored;
+        echo $email groups will be mirrored FROM $mirrored press 1 if this is OK or 2 to exit;
+        read answer
+        if [ "$answer" -eq "1" ]
+         then
+              purge_groups=$($gam info user $mirrored | grep -A 100 "Groups:" |cut -d '<' -f2 |cut -d '>' -f1 |grep -v 'Groups:'|grep -B 100 'Licenses:'| grep -v 'Licenses:')
+                 for i in $purge_groups
+                  do
+                     echo adding $email to $i group  
+                     $gam update group $i add member $email
+                  done;
+          echo "All groups have been mirrored press [enter] key to continue. . .";
+          read enterKey;
+        else
+             clear
+             newuser
+         fi;;
+
+     14) echo "************ Forward $email's Emails to another user ************";
          read -p  "Enter email address where mail will be forwarded: " forward;
          gam user $email forward on $forward keep
-         echo "Emails are bing forwarded press [enter] key to continue. . .";
+         echo "Emails are being forwarded press [enter] key to continue. . .";
         read enterKey;;
         
-     14) echo "************ Admin Another User ************";
+     15) echo "************ Admin Another User ************";
         newuser;       
         echo "Press [enter] key to continue. . .";
         read enterKey;;
     
-     15) echo "Bye $USER";
+     16) echo "Bye $USER";
         exit 1;; 
         
      *) echo "$opt is an invaild option. Please select option between 1-15 only"
