@@ -1,6 +1,6 @@
 #! /bin/bash
 
-gam="python $HOME/Documents/gam/gam.py" #set this to the location of your GAM binaries
+gam="$HOME/Documents/gam/gam" #set this to the location of your GAM binaries
 start_date=`date +%Y-%m-%d` # sets date for vacation message in proper formate   
 end_date=`date -v+90d +%Y-%m-%d` #adds 90 days to todays date for vacation message
 newuser(){
